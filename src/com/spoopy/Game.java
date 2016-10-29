@@ -14,6 +14,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -21,6 +22,8 @@ public class Game {
 	public static final int CANVAS_WIDTH = 1280;
 	public static final int CANVAS_HEIGHT = 720;
 	private final double updateTime = 0.016667;
+	
+	private final KeyCodeCombination GO_FULLSCREEN = new KeyCodeCombination(KeyCode.ENTER, KeyCombination.ALT_DOWN);
 	
 	private Stage mainStage;
 	private Scene mainScene;
@@ -32,12 +35,10 @@ public class Game {
 	
 	public Game(Stage stage) {
 		mainStage = stage;
-		//mainStage.setResizable(false);
 		mainStage.requestFocus();
 		mainStage.centerOnScreen();
 		mainStage.setFullScreen(true);
 		mainStage.setFullScreenExitHint("");
-		mainStage.setFullScreenExitKeyCombination(new KeyCodeCombination(KeyCode.ENTER, KeyCombination.ALT_DOWN));
 		
 		Group root = new Group();
 		mainScene = new Scene(root);
@@ -50,6 +51,12 @@ public class Game {
 		});
 		mainScene.heightProperty().addListener((obsv) -> {
 			canvas.setHeight(mainScene.heightProperty().doubleValue());
+		});
+		mainScene.addEventHandler(KeyEvent.KEY_RELEASED, (event) -> {
+			if(GO_FULLSCREEN.match(event)) {
+				boolean full = mainStage.fullScreenProperty().getValue();
+				mainStage.setFullScreen(!full);
+			}
 		});
 		
 		tilemap = TileMap.ReadFromFile("map1.txt");
