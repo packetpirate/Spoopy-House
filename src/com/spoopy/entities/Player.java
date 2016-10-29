@@ -1,7 +1,9 @@
 package com.spoopy.entities;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import com.spoopy.tile.Tile;
 import com.spoopy.tile.TileMap;
@@ -53,6 +55,13 @@ public class Player {
 	public boolean isInteracting() { return interacting; }
 	public void setInteracting(boolean b) { interacting = b; }
 	
+	private Set<Integer> keys;
+	public Set<Integer> getKeys() { return keys; }
+	public void clearKeys() { keys.clear(); }
+	public boolean hasKey(int id) { return keys.contains(id); }
+	public void addKey(int id) { keys.add(id); }
+	public void remKey(int id) { keys.remove(id); }
+	
 	private Map<String, Image> images;
 	public Image getImage(String state) { return images.get(state); }
 	public void changeImage(String state, Image i) { images.put(state, i); }
@@ -61,6 +70,8 @@ public class Player {
 	public Player(Pair<Integer> p) {
 		position = p;
 		facing = Facing.DOWN;
+		
+		keys = new HashSet<>();
 		
 		images = new HashMap<String, Image>() {{
 			put("up", Utils.LoadImage("professor_up.png"));

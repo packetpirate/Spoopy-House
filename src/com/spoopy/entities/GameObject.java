@@ -2,10 +2,13 @@ package com.spoopy.entities;
 
 import java.util.List;
 
+import com.spoopy.tile.Tile;
+import com.spoopy.tile.TileMap;
 import com.spoopy.utils.Pair;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 
 public abstract class GameObject {
 	private boolean passable;
@@ -37,12 +40,19 @@ public abstract class GameObject {
 		image = i;
 	}
 	
-	public abstract boolean interact(Player player);
+	public abstract boolean interact(Player player, TileMap tm);
 	
 	public void render(GraphicsContext gc, Pair<Integer> position) {
-		if(image != null) gc.drawImage(image, position.x, position.y);
+		if(image != null) gc.drawImage(image, (position.x * Tile.SIZE), (position.y * Tile.SIZE));
 		else {
-			
+			int x = (position.x * Tile.SIZE) + 16;
+			int y = (position.y * Tile.SIZE) + 16;
+			int w = Tile.SIZE / 2;
+			int h = Tile.SIZE / 2;
+			gc.setStroke(Color.BLACK);
+			gc.setFill(Color.YELLOW);
+			gc.fillRect(x, y, w, h);
+			gc.strokeRect(x, y, w, h);
 		}
 	}
 }

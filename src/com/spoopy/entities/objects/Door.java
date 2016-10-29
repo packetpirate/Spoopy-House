@@ -6,6 +6,7 @@ import com.spoopy.entities.Facing;
 import com.spoopy.entities.GameObject;
 import com.spoopy.entities.Player;
 import com.spoopy.tile.Tile;
+import com.spoopy.tile.TileMap;
 import com.spoopy.utils.Pair;
 
 import javafx.scene.canvas.GraphicsContext;
@@ -13,6 +14,10 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 public class Door extends GameObject {
+	private int doorID;
+	public int getDoorID() { return doorID; }
+	public void changeDoorID(int id) { doorID = id; }
+	
 	private boolean open;
 	public boolean isOpen() { return open; }
 	public void open() { open = true; }
@@ -24,21 +29,30 @@ public class Door extends GameObject {
 	public void unlock() { locked = false; }
 	
 	public Door(boolean p, boolean b, List<Facing> d, Image i) {
-		this(p, b, d, i, false);
+		this(p, b, d, i, false, 0);
 	}
 	
-	public Door(boolean p, boolean b, List<Facing> d, Image i, boolean l) {
+	public Door(boolean p, boolean b, List<Facing> d, Image i, boolean l, int id) {
 		super(p, b, d, i);
 		open = false;
 		locked = l;
+		doorID = id;
 	}
 
 	@Override
-	public boolean interact(Player player) {
+	public boolean interact(Player player, TileMap tm) {
 		if(isActionable(Facing.getOpposite(player.getFacing()))) {
 			if(isLocked()) {
-				System.out.println("Door is locked!");
-				return true;
+				if(player.hasKey(getDoorID())) {
+					unlock();
+					open();
+					makePassable(true);
+					System.out.println("You unlock the door and open it...");
+					return true;
+				} else {
+					System.out.println("You do not have the correct key for this door!");
+					return false;
+				}
 			} else { 
 				if(!isOpen()) {
 					open();

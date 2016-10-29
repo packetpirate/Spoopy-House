@@ -6,6 +6,7 @@ import java.util.List;
 import com.spoopy.entities.Facing;
 import com.spoopy.entities.Player;
 import com.spoopy.entities.objects.Door;
+import com.spoopy.entities.objects.Key;
 import com.spoopy.gfx.Viewport;
 import com.spoopy.tile.Tile;
 import com.spoopy.tile.TileMap;
@@ -92,12 +93,19 @@ public class Game {
 		
 		{ // Add doors to test.
 			Image door = Utils.LoadImage("door_01.png");
+			Image goldKey = Utils.LoadImage("Gold_Key.png");
 			tilemap.getTile(new Pair<Integer>(13, 10))
 				   .setObject(new Door(false, true, new ArrayList<Facing>() {{ add(Facing.UP); add(Facing.DOWN); }}, 
-						   			   door, true));
+						   			   door, true, 1));
 			tilemap.getTile(new Pair<Integer>(14, 10))
 				   .setObject(new Door(false, true, new ArrayList<Facing>() {{ add(Facing.UP); add(Facing.DOWN); }}, 
-			   			   			   door, false));
+			   			   			   door, true, 1));
+			tilemap.getTile(new Pair<Integer>(18, 3))
+				   .setObject(new Key(true, true, new ArrayList<Facing>() {{ add(Facing.UP); 
+				   															 add(Facing.DOWN); 
+				   															 add(Facing.LEFT); 
+				   															 add(Facing.RIGHT); }},
+						   			  goldKey, 1));
 		} // End door adds.
 		
 		new AnimationTimer() {
@@ -154,7 +162,7 @@ public class Game {
 					if((i != 0) && (j != 0)) continue;
 					Tile t = tilemap.getTile(new Pair<Integer>((player.getX() + i), (player.getY() + j)));
 					if((t != null) && (t.getObject() != null)) {
-						if(t.getObject().interact(player)) {
+						if(t.getObject().interact(player, tilemap)) {
 							interacted = true;
 							break outer;
 						}
