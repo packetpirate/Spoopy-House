@@ -1,5 +1,6 @@
 package com.spoopy.tile;
 
+import com.spoopy.entities.GameObject;
 import com.spoopy.utils.Pair;
 
 import javafx.scene.canvas.GraphicsContext;
@@ -22,8 +23,15 @@ public class Tile {
 	public void setY(int y) { position.y = y; }
 	
 	private boolean passable;
-	public boolean isPassable() { return passable; }
+	public boolean isPassable() { 
+		return (passable || ((object != null) && object.isPassable()));
+	}
 	public void makePassable(boolean b) { passable = b; }
+	
+	private GameObject object;
+	public GameObject getObject() { return object; }
+	public void setObject(GameObject obj) { object = obj; }
+	public void unsetObject() { object = null; }
 	
 	private Image image;
 	public Image getImage() { return image; }
@@ -41,6 +49,7 @@ public class Tile {
 		type = tt;
 		position = p;
 		passable = b;
+		object = null;
 		image = i;
 	}
 	
@@ -52,7 +61,6 @@ public class Tile {
 			if     (type == TileType.START) c = Color.DARKGREEN;
 			else if(type == TileType.EMPTY) c = Color.WHITE;
 			else if(type == TileType.WALL)  c = Color.BROWN;
-			else if(type == TileType.DOOR)  c = Color.BLUE;
 			else if(type == TileType.EXIT)  c = Color.GREEN;
 			else if(type == TileType.ERROR) c = Color.RED;
 			
@@ -61,5 +69,7 @@ public class Tile {
 						(position.y * Tile.SIZE), 
 						Tile.SIZE, Tile.SIZE);
 		}
+		
+		if(object != null) object.render(gc, position);
 	}
 }

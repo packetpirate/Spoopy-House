@@ -49,6 +49,10 @@ public class Player {
 		}
 	}
 	
+	private boolean interacting;
+	public boolean isInteracting() { return interacting; }
+	public void setInteracting(boolean b) { interacting = b; }
+	
 	private Map<String, Image> images;
 	public Image getImage(String state) { return images.get(state); }
 	public void changeImage(String state, Image i) { images.put(state, i); }

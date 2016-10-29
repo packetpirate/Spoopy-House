@@ -1,7 +1,5 @@
 package com.spoopy.entities;
 
-import com.spoopy.utils.Pair;
-
 public enum Facing {
 	LOLWUT, UP, DOWN, LEFT, RIGHT;
 	

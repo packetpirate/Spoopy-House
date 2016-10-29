@@ -5,10 +5,12 @@ import java.util.List;
 
 import com.spoopy.entities.Facing;
 import com.spoopy.entities.Player;
+import com.spoopy.entities.objects.Door;
 import com.spoopy.gfx.Viewport;
 import com.spoopy.tile.Tile;
 import com.spoopy.tile.TileMap;
 import com.spoopy.utils.Pair;
+import com.spoopy.utils.Utils;
 
 import javafx.animation.AnimationTimer;
 import javafx.event.EventHandler;
@@ -16,6 +18,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -43,6 +46,7 @@ public class Game {
 	private Viewport view;
 	private Player player;
 	
+	@SuppressWarnings("serial")
 	public Game(Stage stage) {
 		mainStage = stage;
 		mainStage.requestFocus();
@@ -85,6 +89,16 @@ public class Game {
 											  (player.getY() - (viewDimensions.y / 2))), 
 							viewDimensions,
 							new Pair<Integer>(tilemap.getWidth(), tilemap.getHeight()));
+		
+		{ // Add doors to test.
+			Image door = Utils.LoadImage("door_01.png");
+			tilemap.getTile(new Pair<Integer>(13, 10))
+				   .setObject(new Door(false, true, new ArrayList<Facing>() {{ add(Facing.UP); add(Facing.DOWN); }}, 
+						   			   door, true));
+			tilemap.getTile(new Pair<Integer>(14, 10))
+				   .setObject(new Door(false, true, new ArrayList<Facing>() {{ add(Facing.UP); add(Facing.DOWN); }}, 
+			   			   			   door, false));
+		} // End door adds.
 		
 		new AnimationTimer() {
 			private long lastUpdate = 0;
@@ -133,6 +147,23 @@ public class Game {
 			}
 			player.face(Facing.getFacing(1, 0));
 		}
+		if(player.isInteracting()) {
+			boolean interacted = false;
+			outer:for(int i = -1; i <= 1; i++) {
+				for(int j = -1; j <= 1; j++) {
+					if((i != 0) && (j != 0)) continue;
+					Tile t = tilemap.getTile(new Pair<Integer>((player.getX() + i), (player.getY() + j)));
+					if((t != null) && (t.getObject() != null)) {
+						if(t.getObject().interact(player)) {
+							interacted = true;
+							break outer;
+						}
+					}
+				}
+			}
+			if(!interacted) System.out.println("There was nothing to interact with!");
+			player.setInteracting(false);
+		}
 	}
 	
 	private void render(long current, long delta) {
@@ -161,12 +192,13 @@ public class Game {
 	EventHandler<KeyEvent> keyPress = (key) -> {
 		String code = key.getCode().toString();
 		if(!input.contains(code)) {
-			input.add(code);
+			if(!key.getCode().equals(KeyCode.SPACE)) input.add(code);
 		}
 	};
 	
 	EventHandler<KeyEvent> keyRelease = (key) -> {
 		String code = key.getCode().toString();
-		input.remove(code);
+		if(key.getCode().equals(KeyCode.SPACE)) player.setInteracting(true);
+		else input.remove(code);
 	};
 }
