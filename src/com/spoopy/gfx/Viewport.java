@@ -25,9 +25,13 @@ public class Viewport {
 									(worldSize.y - dimensions.y));
 	}
 	
-	public void move(int x, int y) {
-		if(!((position.x + x) > viewMax.x)) position.x += x;
-		if(!((position.y + y) > viewMax.y)) position.y += y;
+	public void move(int x, int y, Pair<Integer> player) {
+		//if(!((position.x + x) > viewMax.x)) position.x += x;
+		//if(!((position.y + y) > viewMax.y)) position.y += y;
+		position.x += x;
+		position.y += y;
+		//if(position.x > viewMax.x) position.x = viewMax.x;
+		//if(position.y > viewMax.y) position.y = viewMax.y;
 	}
 	
 	public Pair<Integer> getAdjustedPosition(Pair<Integer> p) {

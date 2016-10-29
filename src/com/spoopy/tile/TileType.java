@@ -9,10 +9,13 @@ public enum TileType {
 	VOID("", false),
 	START("", true),
 	EMPTY("", true),
-	WALL("", false);
+	WALL("", false),
+	DOOR("", false),
+	EXIT("", false);
 	
 	private boolean passable;
 	public boolean isPassable() { return passable; }
+	public void makePassable(boolean b) { passable = b; }
 	
 	private Image image;
 	public Image getImage() { return image; }
@@ -27,6 +30,9 @@ public enum TileType {
 			case '0': return TileType.VOID;
 			case 'P': return TileType.START;
 			case '1': return TileType.EMPTY;
+			case 'X': return TileType.WALL;
+			case 'D': return TileType.DOOR;
+			case 'E': return TileType.EXIT;
 			default:  return TileType.ERROR;
 		}
 	}

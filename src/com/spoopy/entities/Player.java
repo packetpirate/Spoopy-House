@@ -1,16 +1,19 @@
 package com.spoopy.entities;
 
-import com.spoopy.gfx.Viewport;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.spoopy.tile.Tile;
 import com.spoopy.tile.TileMap;
 import com.spoopy.utils.Pair;
+import com.spoopy.utils.Utils;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 public class Player {
-	public static final long MOVE_DELAY = 200;
+	public static final long MOVE_DELAY = 300;
 	
 	private Pair<Integer> position;
 	public Pair<Integer> getPosition() { return position; }
@@ -33,22 +36,44 @@ public class Player {
 		lastMove = current;
 	}
 	
-	private Image image;
-	public Image getImage() { return image; }
-	public void changeImage(Image i) { image = i; }
-	
-	public Player(Pair<Integer> p) {
-		position = p;
+	private Facing facing;
+	public Facing getFacing() { return facing; }
+	public void face(Facing f) { facing = f; }
+	public Image getFacingSprite() {
+		switch(facing) {
+			case UP:    return images.get("up");
+			case DOWN:  return images.get("down");
+			case LEFT:  return images.get("left");
+			case RIGHT: return images.get("right");
+			default:    return null;
+		}
 	}
 	
-	public void render(GraphicsContext gc, Viewport view) {
-		Pair<Integer> aPosition = view.getAdjustedPosition(position);
-		if(image != null) gc.drawImage(image, (aPosition.x * Tile.SIZE), 
-				  							  (aPosition.y * Tile.SIZE));
+	private Map<String, Image> images;
+	public Image getImage(String state) { return images.get(state); }
+	public void changeImage(String state, Image i) { images.put(state, i); }
+	
+	@SuppressWarnings("serial")
+	public Player(Pair<Integer> p) {
+		position = p;
+		facing = Facing.DOWN;
+		
+		images = new HashMap<String, Image>() {{
+			put("up", Utils.LoadImage("professor_up.png"));
+			put("down", Utils.LoadImage("professor_down.png"));
+			put("left", Utils.LoadImage("professor_left.png"));
+			put("right", Utils.LoadImage("professor_right.png"));
+		}};
+	}
+	
+	public void render(GraphicsContext gc) {
+		Image facingSprite = getFacingSprite();
+		if(facingSprite != null) gc.drawImage(facingSprite, (position.x * Tile.SIZE), 
+				  							  (position.y * Tile.SIZE));
 		else {
 			gc.setFill(Color.BLUE);
-			gc.fillOval(((aPosition.x * Tile.SIZE) + 16), 
-						((aPosition.y * Tile.SIZE) + 16), 
+			gc.fillOval(((position.x * Tile.SIZE) + 16), 
+						((position.y * Tile.SIZE) + 16), 
 						(Tile.SIZE - 32), (Tile.SIZE - 32));
 		}
 	}

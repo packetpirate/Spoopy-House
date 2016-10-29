@@ -3,6 +3,7 @@ package com.spoopy;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.spoopy.entities.Facing;
 import com.spoopy.entities.Player;
 import com.spoopy.gfx.Viewport;
 import com.spoopy.tile.Tile;
@@ -48,6 +49,7 @@ public class Game {
 		mainStage.centerOnScreen();
 		mainStage.setFullScreen(true);
 		mainStage.setFullScreenExitHint("");
+		mainStage.setFullScreenExitKeyCombination(GO_FULLSCREEN);
 		
 		Group root = new Group();
 		mainScene = new Scene(root);
@@ -65,6 +67,8 @@ public class Game {
 			if(GO_FULLSCREEN.match(event)) {
 				boolean full = mainStage.fullScreenProperty().getValue();
 				mainStage.setFullScreen(!full);
+			} else if(event.getCode().equals(KeyCode.ESCAPE)) {
+				mainStage.close();
 			}
 		});
 		
@@ -77,7 +81,6 @@ public class Game {
 		
 		Pair<Integer> viewDimensions = new Pair<Integer>((int)(canvas.getWidth() / Tile.SIZE), 
 											  			 (int)(canvas.getHeight() / Tile.SIZE));
-		System.out.println("INFO: View Dimensions => " + viewDimensions.toString());
 		view = new Viewport(new Pair<Integer>((player.getX() - (viewDimensions.x / 2)), 
 											  (player.getY() - (viewDimensions.y / 2))), 
 							viewDimensions,
@@ -102,21 +105,33 @@ public class Game {
 	
 	private void update(long current, long delta) {
 		// Check if we can move the player yet.
-		if(input.contains("W") && player.canMove(tilemap, 0, -1, current)) {
-			player.move(0, -1, current);
-			view.move(0, -1);
+		if(input.contains("W")) {
+			if(player.canMove(tilemap, 0, -1, current)) {
+				player.move(0, -1, current);
+				view.move(0, -1, player.getPosition());
+			}
+			player.face(Facing.getFacing(0, -1));
 		}
-		if(input.contains("A") && player.canMove(tilemap, -1, 0, current)) {
-			player.move(-1, 0, current);
-			view.move(-1, 0);
+		if(input.contains("A")) {
+			if(player.canMove(tilemap, -1, 0, current)) {
+				player.move(-1, 0, current);
+				view.move(-1, 0, player.getPosition());
+			}
+			player.face(Facing.getFacing(-1, 0));
 		}
-		if(input.contains("S") && player.canMove(tilemap, 0, 1, current)) {
-			player.move(0, 1, current);
-			view.move(0, 1);
+		if(input.contains("S")) {
+			if(player.canMove(tilemap, 0, 1, current)) {
+				player.move(0, 1, current);
+				view.move(0, 1, player.getPosition());
+			}
+			player.face(Facing.getFacing(0, 1));
 		}
-		if(input.contains("D") && player.canMove(tilemap, 1, 0, current)) {
-			player.move(1, 0, current);
-			view.move(1, 0);
+		if(input.contains("D")) {
+			if(player.canMove(tilemap, 1, 0, current)) {
+				player.move(1, 0, current);
+				view.move(1, 0, player.getPosition());
+			}
+			player.face(Facing.getFacing(1, 0));
 		}
 	}
 	
@@ -124,26 +139,23 @@ public class Game {
 		gc.setFill(Color.BLACK);
 		gc.fillRect(0, 0, mainScene.getWidth(), mainScene.getHeight());
 		
+		// Save the transform so we can transform everything according to the viewport.
+		gc.save();
+		gc.translate(-(view.getX() * Tile.SIZE), -(view.getY() * Tile.SIZE));
+		
 		// Render all tiles in the tilemap.
 		TileMap.forAllTiles(0, (tilemap.getWidth() - 1), 
 							0, (tilemap.getHeight() - 1), 
 							(x, y) -> {
 			Tile t = tilemap.getTile(new Pair<Integer>(x, y));
-			if(t != null) t.render(gc, view);
+			if(t != null) t.render(gc);
 		});
 		
 		// Render the player.
-		player.render(gc, view);
+		player.render(gc);
 		
-		// Show viewport position.
-//		gc.setStroke(Color.RED);
-//		gc.strokeLine((view.getX() * Tile.SIZE), 0, 
-//					  (view.getX() * Tile.SIZE), (view.getY() * Tile.SIZE));
-//		gc.strokeLine(0, (view.getY() * Tile.SIZE), 
-//					  (view.getX() * Tile.SIZE), (view.getY() * Tile.SIZE));
-//		gc.strokeRect((view.getX() * Tile.SIZE), (view.getY() * Tile.SIZE), 
-//					  ((player.getX() + view.getX()) * Tile.SIZE), 
-//					  ((player.getY() + view.getY()) * Tile.SIZE));
+		// Restore the transform.
+		gc.restore();
 	}
 	
 	EventHandler<KeyEvent> keyPress = (key) -> {
