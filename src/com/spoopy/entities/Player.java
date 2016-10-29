@@ -43,7 +43,8 @@ public class Player {
 	
 	public void render(GraphicsContext gc, Viewport view) {
 		Pair<Integer> aPosition = view.getAdjustedPosition(position);
-		if(image != null) gc.drawImage(image, (aPosition.x * Tile.SIZE), (aPosition.y * Tile.SIZE));
+		if(image != null) gc.drawImage(image, (aPosition.x * Tile.SIZE), 
+				  							  (aPosition.y * Tile.SIZE));
 		else {
 			gc.setFill(Color.BLUE);
 			gc.fillOval(((aPosition.x * Tile.SIZE) + 16), 

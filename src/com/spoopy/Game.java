@@ -75,8 +75,9 @@ public class Game {
 		tilemap = TileMap.ReadFromFile("map1.txt");
 		player = new Player(tilemap.findStart());
 		
-		Pair<Integer> viewDimensions = new Pair<Integer>((int)(mainScene.getWidth() / Tile.SIZE), 
-											  			 (int)(mainScene.getHeight() / Tile.SIZE));
+		Pair<Integer> viewDimensions = new Pair<Integer>((int)(canvas.getWidth() / Tile.SIZE), 
+											  			 (int)(canvas.getHeight() / Tile.SIZE));
+		System.out.println("INFO: View Dimensions => " + viewDimensions.toString());
 		view = new Viewport(new Pair<Integer>((player.getX() - (viewDimensions.x / 2)), 
 											  (player.getY() - (viewDimensions.y / 2))), 
 							viewDimensions,
@@ -133,6 +134,16 @@ public class Game {
 		
 		// Render the player.
 		player.render(gc, view);
+		
+		// Show viewport position.
+//		gc.setStroke(Color.RED);
+//		gc.strokeLine((view.getX() * Tile.SIZE), 0, 
+//					  (view.getX() * Tile.SIZE), (view.getY() * Tile.SIZE));
+//		gc.strokeLine(0, (view.getY() * Tile.SIZE), 
+//					  (view.getX() * Tile.SIZE), (view.getY() * Tile.SIZE));
+//		gc.strokeRect((view.getX() * Tile.SIZE), (view.getY() * Tile.SIZE), 
+//					  ((player.getX() + view.getX()) * Tile.SIZE), 
+//					  ((player.getY() + view.getY()) * Tile.SIZE));
 	}
 	
 	EventHandler<KeyEvent> keyPress = (key) -> {

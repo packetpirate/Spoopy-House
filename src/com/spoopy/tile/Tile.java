@@ -47,7 +47,8 @@ public class Tile {
 	
 	public void render(GraphicsContext gc, Viewport view) {
 		Pair<Integer> aPosition = view.getAdjustedPosition(position);
-		if(image != null) gc.drawImage(image, aPosition.x, aPosition.y);
+		if(image != null) gc.drawImage(image, (aPosition.x * Tile.SIZE), 
+											  (aPosition.y * Tile.SIZE));
 		else {
 			Color c = Color.BLACK;
 			if     (type == TileType.START) c = Color.GREEN;
