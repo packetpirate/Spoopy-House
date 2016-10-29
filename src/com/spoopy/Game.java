@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.spoopy.entities.Player;
+import com.spoopy.gfx.Viewport;
 import com.spoopy.tile.Tile;
 import com.spoopy.tile.TileMap;
 import com.spoopy.utils.Pair;
@@ -23,7 +24,7 @@ import javafx.stage.Stage;
 
 public class Game {
 	public static final int CANVAS_WIDTH = 1280;
-	public static final int CANVAS_HEIGHT = 720;
+	public static final int CANVAS_HEIGHT = 704;
 	public static final long NANO_TO_MS = 1000000L;
 	private final double updateTime = 0.016667;
 	
@@ -38,6 +39,7 @@ public class Game {
 	private List<String> input;
 	
 	private TileMap tilemap;
+	private Viewport view;
 	private Player player;
 	
 	public Game(Stage stage) {
@@ -73,6 +75,13 @@ public class Game {
 		tilemap = TileMap.ReadFromFile("map1.txt");
 		player = new Player(tilemap.findStart());
 		
+		Pair<Integer> viewDimensions = new Pair<Integer>((int)(mainScene.getWidth() / Tile.SIZE), 
+											  			 (int)(mainScene.getHeight() / Tile.SIZE));
+		view = new Viewport(new Pair<Integer>((player.getX() - (viewDimensions.x / 2)), 
+											  (player.getY() - (viewDimensions.y / 2))), 
+							viewDimensions,
+							new Pair<Integer>(tilemap.getWidth(), tilemap.getHeight()));
+		
 		new AnimationTimer() {
 			private long lastUpdate = 0;
 			
@@ -92,10 +101,22 @@ public class Game {
 	
 	private void update(long current, long delta) {
 		// Check if we can move the player yet.
-		if(input.contains("W") && player.canMove(tilemap, 0, -1, current)) player.move(0, -1, current);
-		if(input.contains("A") && player.canMove(tilemap, -1, 0, current)) player.move(-1, 0, current);
-		if(input.contains("S") && player.canMove(tilemap, 0, 1, current)) player.move(0, 1, current);
-		if(input.contains("D") && player.canMove(tilemap, 1, 0, current)) player.move(1, 0, current);
+		if(input.contains("W") && player.canMove(tilemap, 0, -1, current)) {
+			player.move(0, -1, current);
+			view.move(0, -1);
+		}
+		if(input.contains("A") && player.canMove(tilemap, -1, 0, current)) {
+			player.move(-1, 0, current);
+			view.move(-1, 0);
+		}
+		if(input.contains("S") && player.canMove(tilemap, 0, 1, current)) {
+			player.move(0, 1, current);
+			view.move(0, 1);
+		}
+		if(input.contains("D") && player.canMove(tilemap, 1, 0, current)) {
+			player.move(1, 0, current);
+			view.move(1, 0);
+		}
 	}
 	
 	private void render(long current, long delta) {
@@ -107,11 +128,11 @@ public class Game {
 							0, (tilemap.getHeight() - 1), 
 							(x, y) -> {
 			Tile t = tilemap.getTile(new Pair<Integer>(x, y));
-			if(t != null) t.render(gc);
+			if(t != null) t.render(gc, view);
 		});
 		
 		// Render the player.
-		player.render(gc);
+		player.render(gc, view);
 	}
 	
 	EventHandler<KeyEvent> keyPress = (key) -> {

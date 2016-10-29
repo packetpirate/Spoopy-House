@@ -1,5 +1,6 @@
 package com.spoopy.entities;
 
+import com.spoopy.gfx.Viewport;
 import com.spoopy.tile.Tile;
 import com.spoopy.tile.TileMap;
 import com.spoopy.utils.Pair;
@@ -40,11 +41,13 @@ public class Player {
 		position = p;
 	}
 	
-	public void render(GraphicsContext gc) {
-		if(image != null) gc.drawImage(image, (position.x * Tile.SIZE), (position.y * Tile.SIZE));
+	public void render(GraphicsContext gc, Viewport view) {
+		Pair<Integer> aPosition = view.getAdjustedPosition(position);
+		if(image != null) gc.drawImage(image, (aPosition.x * Tile.SIZE), (aPosition.y * Tile.SIZE));
 		else {
 			gc.setFill(Color.BLUE);
-			gc.fillOval(((position.x * Tile.SIZE) + 16), ((position.y * Tile.SIZE) + 16), 
+			gc.fillOval(((aPosition.x * Tile.SIZE) + 16), 
+						((aPosition.y * Tile.SIZE) + 16), 
 						(Tile.SIZE - 32), (Tile.SIZE - 32));
 		}
 	}

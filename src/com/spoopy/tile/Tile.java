@@ -1,5 +1,6 @@
 package com.spoopy.tile;
 
+import com.spoopy.gfx.Viewport;
 import com.spoopy.utils.Pair;
 
 import javafx.scene.canvas.GraphicsContext;
@@ -44,8 +45,9 @@ public class Tile {
 		image = i;
 	}
 	
-	public void render(GraphicsContext gc) {
-		if(image != null) gc.drawImage(image, position.x, position.y);
+	public void render(GraphicsContext gc, Viewport view) {
+		Pair<Integer> aPosition = view.getAdjustedPosition(position);
+		if(image != null) gc.drawImage(image, aPosition.x, aPosition.y);
 		else {
 			Color c = Color.BLACK;
 			if     (type == TileType.START) c = Color.GREEN;
@@ -53,7 +55,9 @@ public class Tile {
 			else if(type == TileType.ERROR) c = Color.RED;
 			
 			gc.setFill(c);
-			gc.fillRect((position.x * Tile.SIZE), (position.y * Tile.SIZE), Tile.SIZE, Tile.SIZE);
+			gc.fillRect((aPosition.x * Tile.SIZE), 
+						(aPosition.y * Tile.SIZE), 
+						Tile.SIZE, Tile.SIZE);
 		}
 	}
 }

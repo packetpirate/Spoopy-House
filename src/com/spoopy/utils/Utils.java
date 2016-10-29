@@ -2,8 +2,6 @@ package com.spoopy.utils;
 
 import java.net.URISyntaxException;
 
-import com.spoopy.tile.TileMap;
-
 import javafx.scene.image.Image;
 
 public class Utils {
