@@ -8,7 +8,8 @@ public enum TileType {
 	ERROR("", false), 
 	VOID("", false),
 	START("", true),
-	EMPTY("", true);
+	EMPTY("", true),
+	WALL("", false);
 	
 	private boolean passable;
 	public boolean isPassable() { return passable; }

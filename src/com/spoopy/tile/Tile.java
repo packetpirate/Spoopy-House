@@ -53,7 +53,7 @@ public class Tile {
 			else if(type == TileType.ERROR) c = Color.RED;
 			
 			gc.setFill(c);
-			gc.fillRect(position.x, position.y, Tile.SIZE, Tile.SIZE);
+			gc.fillRect((position.x * Tile.SIZE), (position.y * Tile.SIZE), Tile.SIZE, Tile.SIZE);
 		}
 	}
 }

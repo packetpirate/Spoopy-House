@@ -8,6 +8,10 @@ public class Pair<T> {
 		this.y = y;
 	}
 	
+	public String toString() {
+		return ("(" + x + ", " + y + ")");
+	}
+	
 	/*
 	 * IMPORTANT TO REMEMBER!!!!!
 	 * Must implement hashCode and equals if you want to retrieve a HashMap value

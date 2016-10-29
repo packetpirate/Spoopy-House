@@ -1,12 +1,15 @@
 package com.spoopy;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.spoopy.entities.Player;
 import com.spoopy.tile.Tile;
 import com.spoopy.tile.TileMap;
 import com.spoopy.utils.Pair;
 
 import javafx.animation.AnimationTimer;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -21,6 +24,7 @@ import javafx.stage.Stage;
 public class Game {
 	public static final int CANVAS_WIDTH = 1280;
 	public static final int CANVAS_HEIGHT = 720;
+	public static final long NANO_TO_MS = 1000000L;
 	private final double updateTime = 0.016667;
 	
 	private final KeyCodeCombination GO_FULLSCREEN = new KeyCodeCombination(KeyCode.ENTER, KeyCombination.ALT_DOWN);
@@ -31,7 +35,10 @@ public class Game {
 	private Canvas canvas = new Canvas(Game.CANVAS_WIDTH, Game.CANVAS_HEIGHT);
 	private GraphicsContext gc = canvas.getGraphicsContext2D();
 	
+	private List<String> input;
+	
 	private TileMap tilemap;
+	private Player player;
 	
 	public Game(Stage stage) {
 		mainStage = stage;
@@ -59,17 +66,23 @@ public class Game {
 			}
 		});
 		
+		input = new ArrayList<>();
+		mainScene.setOnKeyPressed(keyPress);
+		mainScene.setOnKeyReleased(keyRelease);
+		
 		tilemap = TileMap.ReadFromFile("map1.txt");
+		player = new Player(tilemap.findStart());
 		
 		new AnimationTimer() {
 			private long lastUpdate = 0;
 			
 			public void handle(long nanoTime) {
+				long current = nanoTime / Game.NANO_TO_MS;
 				if((((double)nanoTime - (double)lastUpdate) / 1000000000.0) >= updateTime) {
-					long dt = nanoTime - lastUpdate;
-					update(nanoTime, dt);
-					render(nanoTime, dt);
-					lastUpdate = nanoTime;
+					long dt = current - lastUpdate;
+					update(current, dt);
+					render(current, dt);
+					lastUpdate = current;
 				}
 			}
 		}.start();
@@ -78,7 +91,11 @@ public class Game {
 	}
 	
 	private void update(long current, long delta) {
-		
+		// Check if we can move the player yet.
+		if(input.contains("W") && player.canMove(tilemap, 0, -1, current)) player.move(0, -1, current);
+		if(input.contains("A") && player.canMove(tilemap, -1, 0, current)) player.move(-1, 0, current);
+		if(input.contains("S") && player.canMove(tilemap, 0, 1, current)) player.move(0, 1, current);
+		if(input.contains("D") && player.canMove(tilemap, 1, 0, current)) player.move(1, 0, current);
 	}
 	
 	private void render(long current, long delta) {
@@ -86,11 +103,26 @@ public class Game {
 		gc.fillRect(0, 0, mainScene.getWidth(), mainScene.getHeight());
 		
 		// Render all tiles in the tilemap.
-		TileMap.forAllTiles(0, (Game.CANVAS_WIDTH - 1), 
-							0, (Game.CANVAS_HEIGHT - 1), 
+		TileMap.forAllTiles(0, (tilemap.getWidth() - 1), 
+							0, (tilemap.getHeight() - 1), 
 							(x, y) -> {
 			Tile t = tilemap.getTile(new Pair<Integer>(x, y));
 			if(t != null) t.render(gc);
 		});
+		
+		// Render the player.
+		player.render(gc);
 	}
+	
+	EventHandler<KeyEvent> keyPress = (key) -> {
+		String code = key.getCode().toString();
+		if(!input.contains(code)) {
+			input.add(code);
+		}
+	};
+	
+	EventHandler<KeyEvent> keyRelease = (key) -> {
+		String code = key.getCode().toString();
+		input.remove(code);
+	};
 }
