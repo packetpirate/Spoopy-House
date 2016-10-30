@@ -10,6 +10,8 @@ import com.spoopy.gfx.Viewport;
 import com.spoopy.tile.MapCreator;
 import com.spoopy.tile.Tile;
 import com.spoopy.tile.TileMap;
+import com.spoopy.tile.TileType;
+import com.spoopy.utils.Message;
 import com.spoopy.utils.Pair;
 import com.spoopy.utils.Utils;
 
@@ -84,8 +86,8 @@ public class Game {
 		mainScene.setOnKeyPressed(keyPress);
 		mainScene.setOnKeyReleased(keyRelease);
 		
-		tilemap = MapCreator.ReadFromFile("map2.txt");
-		MapCreator.ReadObjectsFromFile("objects1.txt", tilemap);
+		tilemap = MapCreator.ReadFromFile("level_1.txt");
+		MapCreator.ReadObjectsFromFile("objs_1.txt", tilemap);
 		player = new Player(tilemap.findStart());
 		
 		Pair<Integer> viewDimensions = new Pair<Integer>((int)(canvas.getWidth() / Tile.SIZE), 
@@ -149,20 +151,18 @@ public class Game {
 		}
 		
 		if(player.isInteracting()) {
-			//boolean interacted = false;
 			outer:for(int i = -1; i <= 1; i++) {
 				for(int j = -1; j <= 1; j++) {
 					if((i != 0) && (j != 0)) continue;
 					Tile t = tilemap.getTile(new Pair<Integer>((player.getX() + i), (player.getY() + j)));
 					if((t != null) && (t.getObject() != null)) {
-						if(t.getObject().interact(player, tilemap, current)) {
-							//interacted = true;
+						if(t.getTileType() == TileType.EXIT) {
+							MessageHandler.addMessage("CONGRATULATIONS! You win!", current, Message.LONG);
 							break outer;
-						}
+						} else if(t.getObject().interact(player, tilemap, current)) break outer;
 					}
 				}
 			}
-			//if(!interacted) System.out.println("There was nothing to interact with!");
 			player.setInteracting(false);
 		}
 		
