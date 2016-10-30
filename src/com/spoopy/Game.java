@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.spoopy.entities.Facing;
 import com.spoopy.entities.Player;
-import com.spoopy.entities.objects.Key;
 import com.spoopy.gfx.MessageHandler;
 import com.spoopy.gfx.Viewport;
 import com.spoopy.tile.MapCreator;
@@ -52,7 +51,6 @@ public class Game {
 	private Viewport view;
 	private Player player;
 	
-	@SuppressWarnings("serial")
 	public Game(Stage stage) {
 		mainStage = stage;
 		mainStage.requestFocus();
@@ -86,7 +84,6 @@ public class Game {
 		mainScene.setOnKeyPressed(keyPress);
 		mainScene.setOnKeyReleased(keyRelease);
 		
-		//tilemap = TileMap.ReadFromFile("map1.txt");
 		tilemap = MapCreator.ReadFromFile("map2.txt");
 		MapCreator.ReadObjectsFromFile("objects1.txt", tilemap);
 		player = new Player(tilemap.findStart());
@@ -98,31 +95,6 @@ public class Game {
 							viewDimensions,
 							new Pair<Integer>(tilemap.getWidth(), tilemap.getHeight()));
 		
-		/*{ // Add objects to test.
-			Image door = Utils.LoadImage("door_01.png");
-			Image goldKey = Utils.LoadImage("skeleton_key.png");
-			Image crate = Utils.LoadImage("crate_02.png");
-			tilemap.getTile(new Pair<Integer>(13, 10))
-				   .setObject(new Door(false, true, new ArrayList<Facing>() {{ add(Facing.UP); add(Facing.DOWN); }}, 
-						   			   door, true, 1));
-			tilemap.getTile(new Pair<Integer>(14, 10))
-				   .setObject(new Door(false, true, new ArrayList<Facing>() {{ add(Facing.UP); add(Facing.DOWN); }}, 
-			   			   			   door, true, 1));
-			tilemap.getTile(new Pair<Integer>(18, 3))
-				   .setObject(new Key(true, true, new ArrayList<Facing>() {{ add(Facing.UP); 
-				   															 add(Facing.DOWN); 
-				   															 add(Facing.LEFT); 
-				   															 add(Facing.RIGHT); }},
-						   			  goldKey, 1));
-			tilemap.getTile(new Pair<Integer>(17, 8))
-				   .setObject(new PushableObject(false, false, new ArrayList<Facing>() {{ add(Facing.UP);
-				   																		  add(Facing.DOWN);
-				   																		  add(Facing.LEFT);
-				   																		  add(Facing.RIGHT);}},
-						      crate));;
-		} // End object adds.*/
-		
-		//Media media = Utils.LoadMedia("UNDERWORLD_(Ambient).mp3");
 		Media media = Utils.LoadMedia("Haunted_House.mp3");
 		MediaPlayer mediaPlayer = new MediaPlayer(media);
 		mediaPlayer.setAutoPlay(true);
