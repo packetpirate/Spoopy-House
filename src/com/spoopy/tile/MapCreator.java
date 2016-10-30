@@ -32,10 +32,7 @@ public class MapCreator {
 		TileMap tm = new TileMap();
 		BufferedReader br = null;
 		try {
-			/*String uriPath = TileMap.class.getResource("/resources/maps/" + filename)
-					  				.toString().replaceFirst("file:/", "");*/
 			InputStream is = TileMap.class.getResourceAsStream("/resources/maps/" + filename);
-			//br = new BufferedReader(new FileReader(uriPath));
 			br = new BufferedReader(new InputStreamReader(is));
 			
 			String line;
@@ -69,10 +66,7 @@ public class MapCreator {
 		String section = "";
 		BufferedReader br = null;
 		try {
-			/*String uriPath = TileMap.class.getResource("/resources/maps/" + filename)
-	  								.toString().replaceFirst("file:/", "");*/
 			InputStream is = TileMap.class.getResourceAsStream("/resources/maps/" + filename);
-			//br = new BufferedReader(new FileReader(uriPath));
 			br = new BufferedReader(new InputStreamReader(is));
 			
 			String line;
