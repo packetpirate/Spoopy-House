@@ -5,8 +5,10 @@ import java.util.List;
 import com.spoopy.entities.Facing;
 import com.spoopy.entities.GameObject;
 import com.spoopy.entities.Player;
+import com.spoopy.gfx.MessageHandler;
 import com.spoopy.tile.Tile;
 import com.spoopy.tile.TileMap;
+import com.spoopy.utils.Message;
 import com.spoopy.utils.Pair;
 
 import javafx.scene.canvas.GraphicsContext;
@@ -47,27 +49,27 @@ public class Door extends GameObject {
 					unlock();
 					open();
 					makePassable(true);
-					System.out.println("You unlock the door and open it...");
+					MessageHandler.addMessage("You unlock and open the door...", current, Message.SHORT);
 					return true;
 				} else {
-					System.out.println("You do not have the correct key for this door!");
+					MessageHandler.addMessage("You don't have the right key!", current, Message.SHORT);
 					return false;
 				}
 			} else { 
 				if(!isOpen()) {
 					open();
 					makePassable(true);
-					System.out.println("The door swings open...");
+					MessageHandler.addMessage("The door swings open...", current, Message.SHORT);
 					return true;
 				} else {
 					close();
 					makePassable(false);
-					System.out.println("You gently close the door...");
+					MessageHandler.addMessage("You gently close the door...", current, Message.SHORT);
 					return true;
 				}
 			}
 		} else {
-			System.out.println("You can't interact with that from here!");
+			MessageHandler.addMessage("You can't interact with that from here!", current, Message.SHORT);
 			return false;
 		}
 	}

@@ -26,6 +26,7 @@ public class Player {
 	public void setY(int y) { position.y = y; }
 	
 	private long lastMove = 0;
+	public boolean onMoveCD(long current) { return !((current - lastMove) >= Player.MOVE_DELAY); }
 	public boolean canMove(TileMap tm, int xD, int yD, long current) {
 		Tile t = tm.getTile(new Pair<Integer>((position.x + xD), (position.y + yD)));
 		return ((current - lastMove) >= Player.MOVE_DELAY) &&

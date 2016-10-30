@@ -27,11 +27,11 @@ public class Key extends GameObject {
 	public boolean interact(Player player, TileMap tm, long current) {
 		TileMap.forAllTiles(0, tm.getWidth(), 0, tm.getHeight(), (x, y) -> {
 			Tile t = tm.getTile(new Pair<Integer>(x, y));
-			if((t != null) && (t.getObject() != null) && (t.getObject() == this)) {
+			if((t != null) && (t.getObject() != null) && 
+			   (t.getObject() == this)) {
 				t.setObject(null);
 				player.addKey(getID());
-				MessageHandler.addMessage("You found a key!", current, Message.MEDIUM);
-				System.out.println("You find a key on the ground...");
+				MessageHandler.addMessage("You find a key on the ground...", current, Message.MEDIUM);
 			}
 		});
 		return false;

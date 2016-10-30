@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.spoopy.entities.Facing;
 import com.spoopy.entities.Player;
+import com.spoopy.entities.PushableObject;
 import com.spoopy.entities.objects.Door;
 import com.spoopy.entities.objects.Key;
 import com.spoopy.gfx.MessageHandler;
@@ -43,7 +44,7 @@ public class Game {
 	private Canvas canvas = new Canvas(Game.CANVAS_WIDTH, Game.CANVAS_HEIGHT);
 	private GraphicsContext gc = canvas.getGraphicsContext2D();
 	
-	private Font mainFont = Utils.LoadFont("shlop_rg.ttf", 48);
+	private Font mainFont = Utils.LoadFont("shlop_rg.ttf", 32);
 	
 	private List<String> input;
 	
@@ -98,6 +99,7 @@ public class Game {
 		{ // Add doors to test.
 			Image door = Utils.LoadImage("door_01.png");
 			Image goldKey = Utils.LoadImage("Gold_Key.png");
+			Image crate = Utils.LoadImage("crate_01.png");
 			tilemap.getTile(new Pair<Integer>(13, 10))
 				   .setObject(new Door(false, true, new ArrayList<Facing>() {{ add(Facing.UP); add(Facing.DOWN); }}, 
 						   			   door, true, 1));
@@ -110,6 +112,12 @@ public class Game {
 				   															 add(Facing.LEFT); 
 				   															 add(Facing.RIGHT); }},
 						   			  goldKey, 1));
+			tilemap.getTile(new Pair<Integer>(17, 8))
+				   .setObject(new PushableObject(false, false, new ArrayList<Facing>() {{ add(Facing.UP);
+				   																		  add(Facing.DOWN);
+				   																		  add(Facing.LEFT);
+				   																		  add(Facing.RIGHT);}},
+						      crate));;
 		} // End door adds.
 		
 		new AnimationTimer() {
@@ -131,49 +139,51 @@ public class Game {
 	
 	private void update(long current, long delta) {
 		// Check if we can move the player yet.
-		if(input.contains("W")) {
+		if(input.contains("W") && !player.onMoveCD(current)) {
+			player.face(Facing.getFacing(0, -1));
+			tilemap.moveObject(player);
 			if(player.canMove(tilemap, 0, -1, current)) {
 				player.move(0, -1, current);
 				view.move(0, -1, player.getPosition());
 			}
-			player.face(Facing.getFacing(0, -1));
-		}
-		if(input.contains("A")) {
+		} else if(input.contains("A") && !player.onMoveCD(current)) {
+			player.face(Facing.getFacing(-1, 0));
+			tilemap.moveObject(player);
 			if(player.canMove(tilemap, -1, 0, current)) {
 				player.move(-1, 0, current);
 				view.move(-1, 0, player.getPosition());
 			}
-			player.face(Facing.getFacing(-1, 0));
-		}
-		if(input.contains("S")) {
+		} else if(input.contains("S") && !player.onMoveCD(current)) {
+			player.face(Facing.getFacing(0, 1));
+			tilemap.moveObject(player);
 			if(player.canMove(tilemap, 0, 1, current)) {
 				player.move(0, 1, current);
 				view.move(0, 1, player.getPosition());
 			}
-			player.face(Facing.getFacing(0, 1));
-		}
-		if(input.contains("D")) {
+		} else if(input.contains("D") && !player.onMoveCD(current)) {
+			player.face(Facing.getFacing(1, 0));
+			tilemap.moveObject(player);
 			if(player.canMove(tilemap, 1, 0, current)) {
 				player.move(1, 0, current);
 				view.move(1, 0, player.getPosition());
 			}
-			player.face(Facing.getFacing(1, 0));
 		}
+		
 		if(player.isInteracting()) {
-			boolean interacted = false;
+			//boolean interacted = false;
 			outer:for(int i = -1; i <= 1; i++) {
 				for(int j = -1; j <= 1; j++) {
 					if((i != 0) && (j != 0)) continue;
 					Tile t = tilemap.getTile(new Pair<Integer>((player.getX() + i), (player.getY() + j)));
 					if((t != null) && (t.getObject() != null)) {
 						if(t.getObject().interact(player, tilemap, current)) {
-							interacted = true;
+							//interacted = true;
 							break outer;
 						}
 					}
 				}
 			}
-			if(!interacted) System.out.println("There was nothing to interact with!");
+			//if(!interacted) System.out.println("There was nothing to interact with!");
 			player.setInteracting(false);
 		}
 		

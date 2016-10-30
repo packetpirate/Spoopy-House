@@ -30,7 +30,11 @@ public class Tile {
 	
 	private GameObject object;
 	public GameObject getObject() { return object; }
-	public void setObject(GameObject obj) { object = obj; }
+	public void setObject(GameObject obj) { 
+		object = obj;
+		if(object != null) passable = object.isPassable();
+		else passable = type.isPassable();
+	}
 	public void unsetObject() { object = null; }
 	
 	private Image image;

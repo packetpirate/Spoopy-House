@@ -20,6 +20,15 @@ public abstract class GameObject {
 	public boolean isActionable(Facing f) { return (actionable && directions.contains(f)); }
 	public void makeActionable(boolean b) { actionable = b; }
 	
+	private boolean pushable;
+	public boolean isPushable() { return pushable; }
+	public boolean isPushable(Facing f, Pair<Integer> p, TileMap tm) {
+		Tile n = Facing.nextTile(f, p, tm);
+		return (pushable && (n != null) && (n.getPosition() != p) && 
+			   (n.getObject() == null) && n.isPassable());
+	}
+	public void makePushable(boolean b) { pushable = b; }
+	
 	private List<Facing> directions;
 	public List<Facing> getDirections() { return directions; }
 	public void addFacing(Facing f) { directions.add(f); }
@@ -36,6 +45,7 @@ public abstract class GameObject {
 	public GameObject(boolean p, boolean b, List<Facing> d, Image i) {
 		passable = p;
 		actionable = b;
+		pushable = false;
 		directions = d;
 		image = i;
 	}
