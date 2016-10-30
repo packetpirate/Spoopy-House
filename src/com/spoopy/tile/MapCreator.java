@@ -1,8 +1,9 @@
 package com.spoopy.tile;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,9 +32,11 @@ public class MapCreator {
 		TileMap tm = new TileMap();
 		BufferedReader br = null;
 		try {
-			String uriPath = TileMap.class.getResource("/resources/maps/" + filename)
-					  				.toString().replaceFirst("file:/", "");
-			br = new BufferedReader(new FileReader(uriPath));
+			/*String uriPath = TileMap.class.getResource("/resources/maps/" + filename)
+					  				.toString().replaceFirst("file:/", "");*/
+			InputStream is = TileMap.class.getResourceAsStream("/resources/maps/" + filename);
+			//br = new BufferedReader(new FileReader(uriPath));
+			br = new BufferedReader(new InputStreamReader(is));
 			
 			String line;
 			int x = 0, y = 0;
@@ -66,9 +69,11 @@ public class MapCreator {
 		String section = "";
 		BufferedReader br = null;
 		try {
-			String uriPath = TileMap.class.getResource("/resources/maps/" + filename)
-	  								.toString().replaceFirst("file:/", "");
-			br = new BufferedReader(new FileReader(uriPath));
+			/*String uriPath = TileMap.class.getResource("/resources/maps/" + filename)
+	  								.toString().replaceFirst("file:/", "");*/
+			InputStream is = TileMap.class.getResourceAsStream("/resources/maps/" + filename);
+			//br = new BufferedReader(new FileReader(uriPath));
+			br = new BufferedReader(new InputStreamReader(is));
 			
 			String line;
 			while((line = br.readLine()) != null) {
