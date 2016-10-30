@@ -40,7 +40,7 @@ public abstract class GameObject {
 		image = i;
 	}
 	
-	public abstract boolean interact(Player player, TileMap tm);
+	public abstract boolean interact(Player player, TileMap tm, long current);
 	
 	public void render(GraphicsContext gc, Pair<Integer> position) {
 		if(image != null) gc.drawImage(image, (position.x * Tile.SIZE), (position.y * Tile.SIZE));

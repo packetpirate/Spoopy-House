@@ -7,6 +7,7 @@ import com.spoopy.entities.Facing;
 import com.spoopy.entities.Player;
 import com.spoopy.entities.objects.Door;
 import com.spoopy.entities.objects.Key;
+import com.spoopy.gfx.MessageHandler;
 import com.spoopy.gfx.Viewport;
 import com.spoopy.tile.Tile;
 import com.spoopy.tile.TileMap;
@@ -25,6 +26,7 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class Game {
@@ -40,6 +42,8 @@ public class Game {
 	
 	private Canvas canvas = new Canvas(Game.CANVAS_WIDTH, Game.CANVAS_HEIGHT);
 	private GraphicsContext gc = canvas.getGraphicsContext2D();
+	
+	private Font mainFont = Utils.LoadFont("shlop_rg.ttf", 48);
 	
 	private List<String> input;
 	
@@ -162,7 +166,7 @@ public class Game {
 					if((i != 0) && (j != 0)) continue;
 					Tile t = tilemap.getTile(new Pair<Integer>((player.getX() + i), (player.getY() + j)));
 					if((t != null) && (t.getObject() != null)) {
-						if(t.getObject().interact(player, tilemap)) {
+						if(t.getObject().interact(player, tilemap, current)) {
 							interacted = true;
 							break outer;
 						}
@@ -172,6 +176,8 @@ public class Game {
 			if(!interacted) System.out.println("There was nothing to interact with!");
 			player.setInteracting(false);
 		}
+		
+		MessageHandler.updateMessages(current);
 	}
 	
 	private void render(long current, long delta) {
@@ -195,6 +201,10 @@ public class Game {
 		
 		// Restore the transform.
 		gc.restore();
+		
+		// Render messages.
+		gc.setFont(mainFont);
+		MessageHandler.renderMessages(gc, current);
 	}
 	
 	EventHandler<KeyEvent> keyPress = (key) -> {
