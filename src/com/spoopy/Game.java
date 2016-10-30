@@ -155,11 +155,12 @@ public class Game {
 				for(int j = -1; j <= 1; j++) {
 					if((i != 0) && (j != 0)) continue;
 					Tile t = tilemap.getTile(new Pair<Integer>((player.getX() + i), (player.getY() + j)));
-					if((t != null) && (t.getObject() != null)) {
+					if(t != null) {
 						if(t.getTileType() == TileType.EXIT) {
 							MessageHandler.addMessage("CONGRATULATIONS! You win!", current, Message.LONG);
 							break outer;
-						} else if(t.getObject().interact(player, tilemap, current)) break outer;
+						}
+						if((t.getObject() != null) && t.getObject().interact(player, tilemap, current)) break outer;
 					}
 				}
 			}
