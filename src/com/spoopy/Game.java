@@ -5,11 +5,10 @@ import java.util.List;
 
 import com.spoopy.entities.Facing;
 import com.spoopy.entities.Player;
-import com.spoopy.entities.PushableObject;
-import com.spoopy.entities.objects.Door;
 import com.spoopy.entities.objects.Key;
 import com.spoopy.gfx.MessageHandler;
 import com.spoopy.gfx.Viewport;
+import com.spoopy.tile.MapCreator;
 import com.spoopy.tile.Tile;
 import com.spoopy.tile.TileMap;
 import com.spoopy.utils.Pair;
@@ -21,11 +20,12 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -86,7 +86,9 @@ public class Game {
 		mainScene.setOnKeyPressed(keyPress);
 		mainScene.setOnKeyReleased(keyRelease);
 		
-		tilemap = TileMap.ReadFromFile("map1.txt");
+		//tilemap = TileMap.ReadFromFile("map1.txt");
+		tilemap = MapCreator.ReadFromFile("map2.txt");
+		MapCreator.ReadObjectsFromFile("objects1.txt", tilemap);
 		player = new Player(tilemap.findStart());
 		
 		Pair<Integer> viewDimensions = new Pair<Integer>((int)(canvas.getWidth() / Tile.SIZE), 
@@ -96,10 +98,10 @@ public class Game {
 							viewDimensions,
 							new Pair<Integer>(tilemap.getWidth(), tilemap.getHeight()));
 		
-		{ // Add doors to test.
+		/*{ // Add objects to test.
 			Image door = Utils.LoadImage("door_01.png");
-			Image goldKey = Utils.LoadImage("Gold_Key.png");
-			Image crate = Utils.LoadImage("crate_01.png");
+			Image goldKey = Utils.LoadImage("skeleton_key.png");
+			Image crate = Utils.LoadImage("crate_02.png");
 			tilemap.getTile(new Pair<Integer>(13, 10))
 				   .setObject(new Door(false, true, new ArrayList<Facing>() {{ add(Facing.UP); add(Facing.DOWN); }}, 
 						   			   door, true, 1));
@@ -118,8 +120,13 @@ public class Game {
 				   																		  add(Facing.LEFT);
 				   																		  add(Facing.RIGHT);}},
 						      crate));;
-		} // End door adds.
+		} // End object adds.*/
 		
+		//Media media = Utils.LoadMedia("UNDERWORLD_(Ambient).mp3");
+		Media media = Utils.LoadMedia("Haunted_House.mp3");
+		MediaPlayer mediaPlayer = new MediaPlayer(media);
+		mediaPlayer.setAutoPlay(true);
+		mediaPlayer.setVolume(0.6);
 		new AnimationTimer() {
 			private long lastUpdate = 0;
 			
@@ -211,6 +218,10 @@ public class Game {
 		
 		// Restore the transform.
 		gc.restore();
+		
+		// Paint spoopy "shader" over everything.
+		gc.setFill(Color.web("rgba(39, 38, 51, 0.7)"));
+		gc.fillRect(0, 0, mainScene.getWidth(), mainScene.getHeight());
 		
 		// Render messages.
 		gc.setFont(mainFont);

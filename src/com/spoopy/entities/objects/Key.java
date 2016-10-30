@@ -28,7 +28,9 @@ public class Key extends GameObject {
 		TileMap.forAllTiles(0, tm.getWidth(), 0, tm.getHeight(), (x, y) -> {
 			Tile t = tm.getTile(new Pair<Integer>(x, y));
 			if((t != null) && (t.getObject() != null) && 
-			   (t.getObject() == this)) {
+			   (t.getObject() == this) && 
+			   (player.getPosition().equals(t.getPosition()) || 
+				Facing.nextTile(player.getFacing(), player.getPosition(), tm).equals(t))) {
 				t.setObject(null);
 				player.addKey(getID());
 				MessageHandler.addMessage("You find a key on the ground...", current, Message.MEDIUM);

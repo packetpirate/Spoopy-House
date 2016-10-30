@@ -43,7 +43,7 @@ public class Door extends GameObject {
 
 	@Override
 	public boolean interact(Player player, TileMap tm, long current) {
-		if(isActionable(Facing.getOpposite(player.getFacing()))) {
+		if(isActionable(player)) {
 			if(isLocked()) {
 				if(player.hasKey(getDoorID())) {
 					unlock();

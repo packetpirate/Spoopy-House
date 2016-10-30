@@ -1,0 +1,6 @@
+[doors]
+(10,5) 1 false true true {UP,DOWN} door_01.png
+(11,5) 1 false true true {UP,DOWN} door_01.png
+[keys]
+(2,10)
+[pushables]

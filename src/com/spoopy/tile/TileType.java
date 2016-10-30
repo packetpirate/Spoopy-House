@@ -7,10 +7,10 @@ import javafx.scene.image.Image;
 public enum TileType {
 	ERROR("", false), 
 	VOID("", false),
-	START("wood-floor_01.png", true),
-	EMPTY("wood-floor_01.png", true),
-	WALL("wall_01.png", false),
-	DOOR("wood-floor_01.png", false),
+	START("wood-floor_02.png", true),
+	EMPTY("wood-floor_02.png", true),
+	WALL("wall_02.png", false),
+	DOOR("wood-floor_02.png", false),
 	EXIT("door_02.png", false);
 	
 	private boolean passable;

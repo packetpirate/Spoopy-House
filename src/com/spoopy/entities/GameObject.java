@@ -18,6 +18,14 @@ public abstract class GameObject {
 	private boolean actionable;
 	public boolean isActionable() { return actionable; }
 	public boolean isActionable(Facing f) { return (actionable && directions.contains(f)); }
+	public boolean isActionable(Player player) { 
+		return (actionable && directions.contains(Facing.getOpposite(player.getFacing()))); 
+	}
+	public boolean isActionable(Player player, TileMap tm) {
+		Tile t = Facing.nextTile(player.getFacing(), player.getPosition(), tm);
+		return (this.isActionable(player) && (t != null) && (t.getObject() != null) &&
+				t.getObject().equals(this));
+	}
 	public void makeActionable(boolean b) { actionable = b; }
 	
 	private boolean pushable;

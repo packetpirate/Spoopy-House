@@ -10,7 +10,6 @@ import java.util.Map.Entry;
 import java.util.function.BiConsumer;
 
 import com.spoopy.entities.Facing;
-import com.spoopy.entities.GameObject;
 import com.spoopy.entities.Player;
 import com.spoopy.utils.Pair;
 
@@ -75,44 +74,5 @@ public class TileMap {
 				f.accept(x, y);
 			}
 		}
-	}
-	
-	public static TileMap ReadFromFile(String filename) {
-		TileMap tm = new TileMap();
-		
-		BufferedReader br = null;
-		try {
-			String uriPath = TileMap.class.getResource("/resources/maps/" + filename)
-										  .toString().replaceFirst("file:/", "");
-			br = new BufferedReader(new FileReader(uriPath));
-			
-			String line;
-			int x = 0, y = 0;
-			while((line = br.readLine()) != null) {
-				tm.addHeight(1);
-				if(line.length() > tm.getWidth()) tm.setWidth(line.length());
-				for(int i = 0; i < line.length(); i++, x++) {
-					char c = line.charAt(i);
-					TileType tt = TileType.getTileType(c);
-					boolean b = tt.isPassable();
-					Tile t = new Tile(tt, new Pair<Integer>(x, y), b, tt.getImage());
-					tm.addTile(t);
-				}
-				x = 0;
-				y++;
-			}
-		} catch(IOException io) {
-			System.err.println("ERROR: Problem reading from map file!");
-			io.printStackTrace();
-		} finally {
-			try {
-				if(br != null) br.close();
-			} catch (IOException e) {
-				System.err.println("ERROR: Could not close BufferedReader!");
-				e.printStackTrace();
-			}
-		}
-		
-		return tm;
 	}
 }

@@ -15,7 +15,7 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 public class Player {
-	public static final long MOVE_DELAY = 300;
+	public static final long MOVE_DELAY = 250;
 	
 	private Pair<Integer> position;
 	public Pair<Integer> getPosition() { return position; }
@@ -29,9 +29,8 @@ public class Player {
 	public boolean onMoveCD(long current) { return !((current - lastMove) >= Player.MOVE_DELAY); }
 	public boolean canMove(TileMap tm, int xD, int yD, long current) {
 		Tile t = tm.getTile(new Pair<Integer>((position.x + xD), (position.y + yD)));
-		return ((current - lastMove) >= Player.MOVE_DELAY) &&
-			   (tm.inBounds((position.x + xD), (position.y + yD))) &&
-			   ((t != null) && t.isPassable()); 
+		return (!onMoveCD(current) && (tm.inBounds((position.x + xD), (position.y + yD))) &&
+			   ((t != null) && t.isPassable())); 
 	}
 	public void move(int xD, int yD, long current) {
 		position.x += xD;
