@@ -1,7 +1,6 @@
 package com.spoopy.tile;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -27,10 +26,9 @@ public class MapCreator {
 	public static Map<String, Image> IMAGES = new HashMap<>();
 	
 	public static TileMap ReadFromFile(String filename) {
-		if((filename == null) || filename.isEmpty()) return null;
-		
-		TileMap tm = new TileMap();
+		String section = "";
 		BufferedReader br = null;
+		TileMap tm = new TileMap();
 		try {
 			InputStream is = TileMap.class.getResourceAsStream("/resources/maps/" + filename);
 			br = new BufferedReader(new InputStreamReader(is));
@@ -38,42 +36,23 @@ public class MapCreator {
 			String line;
 			int x = 0, y = 0;
 			while((line = br.readLine()) != null) {
-				tm.addHeight(1);
-				if(line.length() > tm.getWidth()) tm.setWidth(line.length());
-				
-				for(int i = 0; i < line.length(); i++, x++) {
-					char c = line.charAt(i);
-					TileType tt = TileType.getTileType(c);
-					boolean b = tt.isPassable();
-					Tile t = new Tile(tt, new Pair<Integer>(x, y), b, tt.getImage());
-					tm.addTile(t);
-				}
-				
-				x = 0;
-				y++;
-			}
-			
-			if(br != null) br.close();
-		} catch(IOException e) {
-			System.err.println("ERROR: Problem reading from map file!");
-			e.printStackTrace();
-		}
-		
-		return tm;
-	}
-	
-	public static void ReadObjectsFromFile(String filename, TileMap tm) {
-		String section = "";
-		BufferedReader br = null;
-		try {
-			InputStream is = TileMap.class.getResourceAsStream("/resources/maps/" + filename);
-			br = new BufferedReader(new InputStreamReader(is));
-			
-			String line;
-			while((line = br.readLine()) != null) {
 				if(line.matches("\\[[a-zA-Z]+\\]")) section = line;
 				else {
-					if(section.equals("[doors]")) {
+					if(section.equals("[level]")) {
+						tm.addHeight(1);
+						if(line.length() > tm.getWidth()) tm.setWidth(line.length());
+						
+						for(int i = 0; i < line.length(); i++, x++) {
+							char c = line.charAt(i);
+							TileType tt = TileType.getTileType(c);
+							boolean b = tt.isPassable();
+							Tile t = new Tile(tt, new Pair<Integer>(x, y), b, tt.getImage());
+							tm.addTile(t);
+						}
+						
+						x = 0;
+						y++;
+					} else if(section.equals("[doors]")) {
 						Pattern p = MapCreator.DOOR_FILE_FORMAT;
 						Matcher m = p.matcher(line);
 						if((m != null) && m.matches()) {
@@ -122,6 +101,8 @@ public class MapCreator {
 			System.err.println("ERROR: Problem reading from objects file!");
 			e.printStackTrace();
 		}
+		
+		return tm;
 	}
 	
 	private static void ParseNewDoor(Matcher m, TileMap tm) throws IndexOutOfBoundsException {

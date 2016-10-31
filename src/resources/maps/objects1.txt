@@ -1,7 +1,0 @@
-[doors]
-(10,5) 1 false true true {UP,DOWN} door_01.png
-(11,5) 1 false true true {UP,DOWN} door_01.png
-[keys]
-(2,10) 1 true true {UP,DOWN,LEFT,RIGHT} skeleton_key.png
-[pushables]
-crate_02.png false false {UP,DOWN,LEFT,RIGHT} {(6,5) (3,6) (5,6) (7,6) (8,6) (4,7) (5,7) (7,7) (6,8) (6,9) (7,9) (5,10)}

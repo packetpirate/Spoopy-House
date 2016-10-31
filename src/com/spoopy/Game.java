@@ -87,7 +87,6 @@ public class Game {
 		mainScene.setOnKeyReleased(keyRelease);
 		
 		tilemap = MapCreator.ReadFromFile("level_1.txt");
-		MapCreator.ReadObjectsFromFile("objs_1.txt", tilemap);
 		player = new Player(tilemap.findStart());
 		
 		Pair<Integer> viewDimensions = new Pair<Integer>((int)(canvas.getWidth() / Tile.SIZE), 
